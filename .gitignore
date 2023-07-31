@@ -1,0 +1,5 @@
+node_modules
+.env
+remindernote-39f26-firebase-adminsdk-vkugl-7de47932d1.json
+server.crt
+server.key
