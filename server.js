@@ -17,10 +17,10 @@ admin.initializeApp({
 
 connectDB()
 
-const options = {
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.crt'),
-}
+// const options = {
+//     key: fs.readFileSync('server.key'),
+//     cert: fs.readFileSync('server.crt'),
+// }
 
 //Used to wrap the req.body to json object
 app.use( express.json() )
@@ -32,8 +32,8 @@ app.use('/api/data', checkAuth, require('./routes/dataRoutes'))
 //Overwrites the default Express Error Handler
 app.use(errorHandler)
 
-const server = https.createServer(options, app)
+// const server = https.createServer(options, app)
 
 //Set the Port from .env file
 const port = process.env.PORT || 5000
-server.listen( port, () => console.log(`Server started at port ${port}`) )
+app.listen( port, () => console.log(`Server started at port ${port}`) )

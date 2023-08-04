@@ -6,9 +6,9 @@ const TodoList = require('../models/todoListModel')
 const Note = require('../models/noteModel')
 
 const backupDataReminders = asyncHandler( async (req, res) => {
-
-    if(req.body.reminders == null || req.body.reminders.length == 0){
-        res.status(400).send("Data Invalid")
+    console.log('Request to backup reminders')
+    if(req.body.reminders == null ){
+        res.status(400).json({message: "Data Invalid"})
         return
     }
     
@@ -18,13 +18,22 @@ const backupDataReminders = asyncHandler( async (req, res) => {
     try {
         await Reminder.deleteMany({userEmail: req.body.userEmail}).session(session)
 
+        if(req.body.reminders.length == 0){
+            await session.commitTransaction()
+            session.endSession()
+            console.log("Backup Reminders: Success")
+            res.status(200).json({message: "Success"})
+            return
+        }
+
         const savedReminders = await Reminder.insertMany(req.body.reminders, { session })
 
         if (savedReminders.length === req.body.reminders.length) {
-
+            
             await session.commitTransaction()
             session.endSession()
-            res.status(200).send("Success")
+            console.log("Backup Reminders: Success")
+            res.status(200).json({message: "Success"})
 
         } else {
 
@@ -39,15 +48,15 @@ const backupDataReminders = asyncHandler( async (req, res) => {
         console.log('Error storing data to MongoDB:', err)
         await session.abortTransaction()
         session.endSession()
-        res.status(500).send('BackupDataNotes: Server Error')
+        res.status(500).json({message: 'BackupDataReminders: Server Error'})
     }
     
 })
 
 const backupDataCountdowns = asyncHandler( async (req, res) => {
-
-    if(req.body.countdowns == null || req.body.countdowns.length == 0){
-        res.status(400).send("Data Invalid")
+    console.log('Request to backup countdowns')
+    if(req.body.countdowns == null){
+        res.status(400).json({message: "Data Invalid"})
         return
     }
     
@@ -57,13 +66,22 @@ const backupDataCountdowns = asyncHandler( async (req, res) => {
     try {
         await Countdown.deleteMany({userEmail: req.body.userEmail}).session(session)
 
+        if(req.body.countdowns.length == 0){
+            await session.commitTransaction()
+            session.endSession()
+            console.log("Backup Countdowns: Success")
+            res.status(200).json({message: "Success"})
+            return
+        }
+
         const savedCountdowns = await Countdown.insertMany(req.body.countdowns, { session })
 
         if (savedCountdowns.length === req.body.countdowns.length) {
 
             await session.commitTransaction()
             session.endSession()
-            res.status(200).send("Success")
+            console.log("Backup Countdowns: Success")
+            res.status(200).json({message: "Success"})
 
         } else {
 
@@ -79,15 +97,15 @@ const backupDataCountdowns = asyncHandler( async (req, res) => {
         console.log('Error storing data to MongoDB:', err)
         await session.abortTransaction()
         session.endSession()
-        res.status(500).send('BackupDataNotes: Server Error')
+        res.status(500).json({message: 'BackupDataCountDowns: Server Error'})
     }
     
 })
 
 const backupDataTodoLists = asyncHandler( async (req, res) => {
-
-    if(req.body.todoLists == null || req.body.todoLists.length == 0){
-        res.status(400).send("Data Invalid")
+    console.log('Request to backup todoLists')
+    if(req.body.todoLists == null){
+        res.status(400).json({message: "Data Invalid"})
         return
     }
     
@@ -97,13 +115,21 @@ const backupDataTodoLists = asyncHandler( async (req, res) => {
     try {
         await TodoList.deleteMany({userEmail: req.body.userEmail}).session(session)
 
+        if(req.body.todoLists.length == 0){
+            await session.commitTransaction()
+            session.endSession()
+            console.log("Backup TodoLists: Success")
+            res.status(200).json({message: "Success"})
+            return
+        }
+
         const savedTodoLists = await TodoList.insertMany(req.body.todoLists, { session })
 
         if (savedTodoLists.length === req.body.todoLists.length) {
-
             await session.commitTransaction()
             session.endSession()
-            res.status(200).send("Success")
+            console.log("Backup TodoLists: Success")
+            res.status(200).json({message: "Success"})
 
         } else {
 
@@ -119,15 +145,15 @@ const backupDataTodoLists = asyncHandler( async (req, res) => {
         console.log('Error storing data to MongoDB:', err)
         await session.abortTransaction()
         session.endSession()
-        res.status(500).send('BackupDataNotes: Server Error')
+        res.status(500).json({message: 'BackupDataTodoLists: Server Error'})
     }
     
 })
 
 const backupDataNotes = asyncHandler( async (req, res) => {
-
-    if(req.body.notes == null || req.body.notes.length == 0){
-        res.status(400).send("Data Invalid")
+    console.log('Request to backup notes')
+    if(req.body.notes == null){
+        res.status(400).json({message: "Data Invalid"})
         return
     }
     
@@ -137,13 +163,22 @@ const backupDataNotes = asyncHandler( async (req, res) => {
     try {
         await Note.deleteMany({userEmail: req.body.userEmail}).session(session)
 
+        if(req.body.notes.length == 0){
+            await session.commitTransaction()
+            session.endSession()
+            console.log("Backup Notes: Success")
+            res.status(200).json({message: "Success"})
+            return
+        }
+
         const savedNotes = await Note.insertMany(req.body.notes, { session })
 
         if (savedNotes.length === req.body.notes.length) {
 
             await session.commitTransaction()
             session.endSession()
-            res.status(200).send("Success")
+            console.log("Backup Notes: Success")
+            res.status(200).json({message: "Success"})
 
         } else {
 
@@ -159,12 +194,13 @@ const backupDataNotes = asyncHandler( async (req, res) => {
         console.log('Error storing data to MongoDB:', err)
         await session.abortTransaction()
         session.endSession()
-        res.status(500).send('BackupDataNotes: Server Error')
+        res.status(500).json({message: 'BackupDataNotes: Server Error'})
     }
     
 })
 
 const restoreData = asyncHandler( async (req, res) => {
+    console.log('Restore Request: ', req.body)
     
     try{
         const reminders = await Reminder.find().exec()
@@ -177,10 +213,10 @@ const restoreData = asyncHandler( async (req, res) => {
 
         req.body.data = { reminders, countdowns, todoLists, notes }
 
-        res.status(200).send(req.body.data)
+        res.status(200).json({data: req.body.data, message: 'Success'})
     }
     catch(err){
-        res.status(200)
+        res.status(500)
         console.log(err.message)
         throw new Error("RestoreData: Server Error")
     }

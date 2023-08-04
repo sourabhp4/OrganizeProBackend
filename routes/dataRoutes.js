@@ -7,6 +7,6 @@ router.route( '/backupReminders' ).post(backupDataReminders)
 router.route( '/backupCountdowns' ).post(backupDataCountdowns)
 router.route( '/backupTodoLists' ).post(backupDataTodoLists)
 router.route( '/backupNotes' ).post(backupDataNotes)
-router.route( '/restore' ).get(restoreData)
+router.route( '/restore' ).post(restoreData)
 
 module.exports = router
