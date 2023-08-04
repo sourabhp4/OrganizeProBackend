@@ -28,6 +28,9 @@ app.use( express.urlencoded({ extended: false }) )
 
 app.use('/api/user', checkAuth, require('./routes/userRoutes'))
 app.use('/api/data', checkAuth, require('./routes/dataRoutes'))
+app.use('/', (req, res) => {
+    res.json({message: "hello World"})
+})
 
 //Overwrites the default Express Error Handler
 app.use(errorHandler)
